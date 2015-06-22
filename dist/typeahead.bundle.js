@@ -1720,7 +1720,6 @@
                     suggestions = suggestions || [];
                     if (!canceled && rendered < that.limit) {
                         that.cancel = $.noop;
-                        rendered += suggestions.length;
                         that._append(query, suggestions.slice(0, that.limit - rendered));
                         that.async && that.trigger("asyncReceived", query);
                     }
@@ -1834,6 +1833,7 @@
                 return this.$node.hasClass(this.classes.open);
             },
             open: function open() {
+                this.$node.scrollTop(0);
                 this.$node.addClass(this.classes.open);
             },
             close: function close() {

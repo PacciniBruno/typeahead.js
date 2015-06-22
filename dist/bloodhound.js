@@ -807,6 +807,7 @@
             o = oParser(o);
             this.sorter = o.sorter;
             this.identify = o.identify;
+            this.dupDetector = o.dupDetector;
             this.sufficient = o.sufficient;
             this.local = o.local;
             this.remote = o.remote ? new Remote(o.remote) : null;

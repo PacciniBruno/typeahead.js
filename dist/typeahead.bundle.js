@@ -655,6 +655,7 @@
                 identify: _.stringify,
                 datumTokenizer: null,
                 queryTokenizer: null,
+                dupDetector: null,
                 sufficient: 5,
                 sorter: null,
                 local: [],
@@ -899,7 +900,7 @@
                     async && async(nonDuplicates);
                 }
                 function filterUnique(local) {
-                    var result = [], ids = [];
+                    var result = [], ids = [], parents = [];
                     _.each(local, function(question, index) {
                         var id = question.answerId;
                         if (!ids[id] || !id) {
@@ -907,7 +908,22 @@
                             result.push(question);
                         }
                     });
+                    parents = filterParent(result);
                     return result;
+                }
+                function filterParent(questions) {
+                    var parentIds = [], parentQuestions = [];
+                    _.each(questions, function(question, index) {
+                        var parentId, parentQuestion;
+                        if (question.isParent) {
+                            parentQuestions.push(question);
+                            return;
+                        }
+                        parentId = question.answerId + "_" + 0;
+                        parentIds.push(parentId);
+                    });
+                    parentQuestions = parentQuestions.concat(that.index.get(parentIds));
+                    return parentQuestions;
                 }
             },
             all: function all() {

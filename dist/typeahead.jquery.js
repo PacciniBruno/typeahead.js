@@ -1133,7 +1133,7 @@
             _onTabKeyed: function onTabKeyed(type, $e) {
                 var $selectable;
                 if ($selectable = this.menu.getActiveSelectable()) {
-                    this.select($selectable) && $e.preventDefault();
+                    this.autocomplete($selectable) && $e.preventDefault();
                 } else if ($selectable = this.menu.getTopSelectable()) {
                     this.autocomplete($selectable) && $e.preventDefault();
                 }

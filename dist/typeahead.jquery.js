@@ -1271,6 +1271,10 @@
                 data = this.menu.getSelectableData($selectable);
                 isValid = data && query !== data.val;
                 if (isValid && !this.eventBus.before("autocomplete", data.obj)) {
+                    var $suggestionList = $(this.menu.$node[0].children[0]).find(this.selectors.suggestion + this.selectors.selectable);
+                    if (this.menu.autoSelect && $suggestionList.length > 0) {
+                        $suggestionList.first().addClass(this.classes.cursor);
+                    }
                     this.input.setQuery(data.val);
                     this.eventBus.trigger("autocomplete", data.obj);
                     return true;

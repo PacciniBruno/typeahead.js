@@ -2311,7 +2311,7 @@
                     }, www);
                     menu = new MenuConstructor({
                         node: $menu,
-                        autoselect: !!o.autoSelect,
+                        autoSelect: !!o.autoSelect,
                         datasets: datasets
                     }, www);
                     typeahead = new Typeahead({

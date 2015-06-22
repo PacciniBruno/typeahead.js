@@ -72,6 +72,7 @@
         input = new Input({ hint: $hint, input: $input, }, www);
         menu = new MenuConstructor({
           node: $menu,
+          autoselect: !!o.autoSelect,
           datasets: datasets
         }, www);
 

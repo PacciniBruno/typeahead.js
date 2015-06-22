@@ -26,6 +26,7 @@ var Menu = (function() {
     // the latest query #update was called with
     this.query = null;
     this.datasets = _.map(o.datasets, initializeDataset);
+    this.autoSelect = !!o.autoSelect;
 
     function initializeDataset(oDataset) {
       var node = that.$node.find(oDataset.node).first();
@@ -121,6 +122,13 @@ var Menu = (function() {
     },
 
     open: function open() {
+    	var $suggestionList = $(this.$node[0].children[0])
+    		.find(this.selectors.suggestion + this.selectors.selectable);
+
+      if (this.autoSelect && $suggestionList.length > 0) {
+        $suggestionList.first().addClass(this.classes.cursor);
+      }
+
     	this.$node.scrollTop(0);
       this.$node.addClass(this.classes.open);
     },

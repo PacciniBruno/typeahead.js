@@ -421,6 +421,7 @@
                 $.error("datumTokenizer and queryTokenizer are both required");
             }
             this.identify = o.identify || _.stringify;
+            this.dupDetector = o.dupDetector;
             this.datumTokenizer = o.datumTokenizer;
             this.queryTokenizer = o.queryTokenizer;
             this.reset();

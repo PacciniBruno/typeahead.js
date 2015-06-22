@@ -20,6 +20,7 @@ var SearchIndex = window.SearchIndex = (function() {
     }
 
     this.identify = o.identify || _.stringify;
+    this.dupDetector = o.dupDetector;
     this.datumTokenizer = o.datumTokenizer;
     this.queryTokenizer = o.queryTokenizer;
 

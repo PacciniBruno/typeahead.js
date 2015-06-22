@@ -181,7 +181,7 @@ var Bloodhound = (function() {
 
 	      _.each(local, function(question, index) {
 	        var id = question.answerId;
-	        if (!ids[id]) {
+	        if (!ids[id] || !id) {
 	          ids[id] = true;
 	          result.push(question);
 	        }

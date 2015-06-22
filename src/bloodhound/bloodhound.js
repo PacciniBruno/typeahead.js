@@ -19,6 +19,7 @@ var Bloodhound = (function() {
 
     this.sorter = o.sorter;
     this.identify = o.identify;
+    this.dupDetector = o.dupDetector;
     this.sufficient = o.sufficient;
 
     this.local = o.local;

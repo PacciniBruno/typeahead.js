@@ -876,6 +876,7 @@
             search: function search(query, sync, async) {
                 var that = this, local;
                 local = this.sorter(this.index.search(query));
+                local = filterUnique(local);
                 sync(this.remote ? local.slice() : local);
                 if (this.remote && local.length < this.sufficient) {
                     this.remote.get(query, processRemote);
@@ -885,12 +886,28 @@
                 return this;
                 function processRemote(remote) {
                     var nonDuplicates = [];
+                    remote = filterUnique(remote);
                     _.each(remote, function(r) {
                         !_.some(local, function(l) {
-                            return that.identify(r) === that.identify(l);
+                            if (that.dupDetector) {
+                                return that.dupDetector(r, l);
+                            } else {
+                                return that.identify(r) === that.identify(l);
+                            }
                         }) && nonDuplicates.push(r);
                     });
                     async && async(nonDuplicates);
+                }
+                function filterUnique(local) {
+                    var result = [], ids = [];
+                    _.each(local, function(question, index) {
+                        var id = question.answerId;
+                        if (!ids[id] || !id) {
+                            ids[id] = true;
+                            result.push(question);
+                        }
+                    });
+                    return result;
                 }
             },
             all: function all() {
@@ -1774,6 +1791,7 @@
             this.$node = $(o.node);
             this.query = null;
             this.datasets = _.map(o.datasets, initializeDataset);
+            this.autoSelect = !!o.autoSelect;
             function initializeDataset(oDataset) {
                 var node = that.$node.find(oDataset.node).first();
                 oDataset.node = node.length ? node : $("<div>").appendTo(that.$node);
@@ -1833,6 +1851,10 @@
                 return this.$node.hasClass(this.classes.open);
             },
             open: function open() {
+                var $suggestionList = $(this.$node[0].children[0]).find(this.selectors.suggestion + this.selectors.selectable);
+                if (this.autoSelect && $suggestionList.length > 0) {
+                    $suggestionList.first().addClass(this.classes.cursor);
+                }
                 this.$node.scrollTop(0);
                 this.$node.addClass(this.classes.open);
             },
@@ -2095,6 +2117,9 @@
                     frontMatchRegEx = new RegExp("^(?:" + escapedQuery + ")(.+$)", "i");
                     match = frontMatchRegEx.exec(data.val);
                     match && this.input.setHint(val + match[1]);
+                    if (this.menu.autoSelect && !$selectable.hasClass(this.classes.cursor)) {
+                        $selectable.addClass(this.classes.cursor);
+                    }
                 } else {
                     this.input.clearHint();
                 }
@@ -2264,6 +2289,7 @@
                     }, www);
                     menu = new MenuConstructor({
                         node: $menu,
+                        autoselect: !!o.autoSelect,
                         datasets: datasets
                     }, www);
                     typeahead = new Typeahead({

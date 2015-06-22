@@ -876,6 +876,7 @@
             search: function search(query, sync, async) {
                 var that = this, local;
                 local = this.sorter(this.index.search(query));
+                local = filterUnique(local);
                 sync(this.remote ? local.slice() : local);
                 if (this.remote && local.length < this.sufficient) {
                     this.remote.get(query, processRemote);
@@ -885,12 +886,28 @@
                 return this;
                 function processRemote(remote) {
                     var nonDuplicates = [];
+                    remote = filterUnique(remote);
                     _.each(remote, function(r) {
                         !_.some(local, function(l) {
-                            return that.identify(r) === that.identify(l);
+                            if (that.dupDetector) {
+                                return that.dupDetector(r, l);
+                            } else {
+                                return that.identify(r) === that.identify(l);
+                            }
                         }) && nonDuplicates.push(r);
                     });
                     async && async(nonDuplicates);
+                }
+                function filterUnique(local) {
+                    var result = [], ids = [];
+                    _.each(local, function(question, index) {
+                        var id = question.answerId;
+                        if (!ids[id] || !id) {
+                            ids[id] = true;
+                            result.push(question);
+                        }
+                    });
+                    return result;
                 }
             },
             all: function all() {

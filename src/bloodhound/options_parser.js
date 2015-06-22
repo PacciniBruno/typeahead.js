@@ -15,6 +15,7 @@ var oParser = (function() {
       identify: _.stringify,
       datumTokenizer: null,
       queryTokenizer: null,
+      dupDetector: null,
       sufficient: 5,
       sorter: null,
       local: [],

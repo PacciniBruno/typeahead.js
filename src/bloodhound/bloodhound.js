@@ -134,6 +134,10 @@ var Bloodhound = (function() {
 
       local = this.sorter(this.index.search(query));
 
+      // First filtering: retrieve only one unique (same answer id)
+      // suggestion per unique question from local storage
+      local = filterUnique(local);
+
       // return a copy to guarantee no changes within this scope
       // as this array will get used when processing the remote results
       sync(this.remote ? local.slice() : local);
@@ -152,15 +156,39 @@ var Bloodhound = (function() {
       function processRemote(remote) {
         var nonDuplicates = [];
 
+        // Second filtering: same with remote.
+        remote = filterUnique(remote);
+
         // exclude duplicates
         _.each(remote, function(r) {
-           !_.some(local, function(l) {
-            return that.identify(r) === that.identify(l);
+          !_.some(local, function(l) {
+          	// Check with custom dupDetector instead of the identify function
+          	// if available in options
+            if (that.dupDetector) {
+              return that.dupDetector(r, l);
+            } else {
+              return that.identify(r) === that.identify(l);
+            }
           }) && nonDuplicates.push(r);
         });
 
         async && async(nonDuplicates);
       }
+
+      function filterUnique(local) {
+	      var result = [],
+	          ids = [];
+
+	      _.each(local, function(question, index) {
+	        var id = question.answerId;
+	        if (!ids[id]) {
+	          ids[id] = true;
+	          result.push(question);
+	        }
+	      });
+
+	      return result;
+	    }
     },
 
     all: function all() {

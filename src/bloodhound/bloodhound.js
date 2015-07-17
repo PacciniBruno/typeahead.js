@@ -191,7 +191,7 @@ var Bloodhound = (function() {
 
 				// Get the parent entry of the filtered questions
 				parents = filterParent(result);
-	      return result;
+	      return parents;
 	    }
 
 	    function filterParent(questions) {

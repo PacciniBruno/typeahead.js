@@ -911,7 +911,7 @@
                         }
                     });
                     parents = filterParent(result);
-                    return result;
+                    return parents;
                 }
                 function filterParent(questions) {
                     var parentIds = [], parentQuestions = [];

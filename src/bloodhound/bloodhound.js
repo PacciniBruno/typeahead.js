@@ -202,15 +202,15 @@ var Bloodhound = (function() {
 	        var parentId, parentQuestion;
 
 	        if (question.isParent) {
-	          parentQuestions.push(question);
+	          parentQuestions[index] = question;
 	          return;
 	        }
 
 					parentId = question.answerId + '_' + 0;
-	        parentIds.push(parentId);
+	        parentIds[index] = parentId;
 	      });
 
-	      parentQuestions = parentQuestions.concat(that.index.get(parentIds));
+	      parentQuestions = _.mixin(parentQuestions, that.index.get(parentIds));
 	      return parentQuestions;
 	    }
     },
